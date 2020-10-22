@@ -2,7 +2,7 @@ package com.tank;
 
 import sun.awt.WindowClosingListener;
 
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -21,5 +21,12 @@ public class Main {
 //            }
 //        });
         TankFrame tf = new TankFrame();
+        while (true) {
+            try {
+                Thread.sleep(50);
+                tf.repaint();
+            } catch (InterruptedException e) {
+            }
+        }
     }
 }
