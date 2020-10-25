@@ -5,7 +5,7 @@ import java.awt.*;
 public class Bullet {
     private int x, y;
     private Dir dir;
-    private int SPEED = 20;
+    private int SPEED = 10;
     private int WIDTH = 10, HEIGHT = 10;
 
     public Bullet(int x, int y, Dir dir) {

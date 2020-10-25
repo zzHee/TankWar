@@ -27,10 +27,13 @@ public class Tank {
     }
     public void paint(Graphics g) {
         //窗口左上角为原点，横轴为x (width)，纵轴为y (height)。
+        Color c = g.getColor();
+        g.setColor(Color.BLUE);
         g.fillRect(x, y, 50, 100);
         if(onMoving){
             move();
         }
+        g.setColor(c);
     }
     private void move() {
         switch (dir) {
