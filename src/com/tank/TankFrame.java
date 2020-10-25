@@ -8,9 +8,8 @@ import java.awt.event.WindowEvent;
 
 public class TankFrame extends Frame{
 
-    private int x = 200, y = 200;
-    Dir dir = Dir.DOWN;
-    private int SPEED = 10;
+    Tank myTank = new Tank(200, 200, Dir.DOWN);
+    Bullet b = new Bullet(200,200,Dir.DOWN);
 
     public TankFrame(){
         setSize(800, 600);
@@ -31,95 +30,55 @@ public class TankFrame extends Frame{
     @Override
     //每次窗口重新绘制，系统会自动调用paint方法，需要给他一支画笔Graphics
     public void paint(Graphics g) {
-        System.out.println("paint");
-        //窗口左上角为原点，横轴为x (width)，纵轴为y (height)。
-        g.fillRect(x, y, 50, 100);
-        switch (dir) {
-            case LEFT:
-                x -= SPEED;
-                break;
-            case RIGHT:
-                x += SPEED;
-                break;
-            case UP:
-                y -= SPEED;
-                break;
-            case DOWN:
-                y += SPEED;
-                break;
-            default:
-                break;
-        }
+//        System.out.println("paint");
+        myTank.paint(g);
+        b.paint(g);
     }
 
     class MyKeyListener extends KeyAdapter {
+
         boolean bl = false;
         boolean br = false;
         boolean bu = false;
         boolean bd = false;
         private void setMainTankDir() {
+            myTank.setOnMoving(true);
+            if(!bl && !br && !bu && !bd) myTank.setOnMoving(false);
             if (bl) {
-                dir = Dir.LEFT;
+                myTank.setDir(Dir.LEFT);
             } else if (br) {
-                dir = Dir.RIGHT;
+                myTank.setDir(Dir.RIGHT);
             } else if (bu) {
-                dir = Dir.UP;
+                myTank.setDir(Dir.UP);
             } else if (bd) {
-                dir = Dir.DOWN;
+                myTank.setDir(Dir.DOWN);
             }
         }
         @Override
         //这里是系统发现按键事件KeyEvent之后自动调用keyPressed方法，并把KeyEvent事件传入
         public void keyPressed(KeyEvent e) {
-            System.out.println("keypressed");
             int key = e.getKeyCode();
             switch (key) {
                 case KeyEvent.VK_LEFT:
-                    dir = Dir.LEFT;
+                    bl = true;
                     break;
                 case KeyEvent.VK_RIGHT:
-                    dir = Dir.RIGHT;
+                    br = true;
                     break;
                 case KeyEvent.VK_UP:
-                    dir = Dir.UP;
+                    bu = true;
                     break;
                 case KeyEvent.VK_DOWN:
-                    dir = Dir.DOWN;
+                    bd = true;
                     break;
                 default:
                     break;
             }
             setMainTankDir();
-//            if (bl && bu) {
-//                x -= 10;
-//                y -= 10;
-//            } else if (bl && bd) {
-//                x -= 10;
-//                y += 10;
-//            } else if (br && bu) {
-//                x += 10;
-//                y -= 10;
-//            } else if (br && bd) {
-//                x += 10;
-//                y += 10;
-//            } else if (bl) {
-//                x -= 10;
-//            } else if (br) {
-//                x += 10;
-//            } else if (bu) {
-//                y -= 10;
-//            } else if (bd) {
-//                y += 10;
-//            }
-
-
-            //这支画笔只有系统自己拿得到，所以我们不能直接调用paint(),而使用repaint()代替
-//            repaint();
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            System.out.println("keyreleased");
             int key = e.getKeyCode();
             switch (key) {
                 case KeyEvent.VK_LEFT:
