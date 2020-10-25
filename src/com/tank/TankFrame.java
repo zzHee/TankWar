@@ -5,12 +5,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TankFrame extends Frame{
     static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
 
-    Tank myTank = new Tank(200, 200, Dir.DOWN);
-    Bullet b = new Bullet(200,200,Dir.DOWN);
+    Tank myTank = new Tank(200, 200, 50, 50, Dir.DOWN, this);
+    List<Bullet> bullets = new ArrayList<>();
 
     public TankFrame(){
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -47,8 +49,16 @@ public class TankFrame extends Frame{
     //每次窗口重新绘制，系统会自动调用paint方法，需要给他一支画笔Graphics
     public void paint(Graphics g) {
 //        System.out.println("paint");
+        Color c = g.getColor();
+        g.setColor(Color.WHITE);
+        g.drawString("子弹的数量" + bullets.size(), 10, 60);
+        g.setColor(c);
+
         myTank.paint(g);
-        b.paint(g);
+        //用iterator遍历的时候删除回有cModificationException
+        for(int i = 0; i < bullets.size(); i++) {
+            bullets.get(i).paint(g);
+        }
     }
 
     class MyKeyListener extends KeyAdapter {
@@ -109,6 +119,8 @@ public class TankFrame extends Frame{
                 case KeyEvent.VK_DOWN:
                     bd = false;
                     break;
+                case KeyEvent.VK_CONTROL:
+                    bullets.add(myTank.fire());
                 default:
                     break;
             }
