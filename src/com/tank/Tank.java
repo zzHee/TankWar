@@ -1,6 +1,7 @@
 package com.tank;
 
 import java.awt.*;
+import java.util.Random;
 
 public class Tank {
     private int x, y;
@@ -9,7 +10,29 @@ public class Tank {
     private int SPEED = 10;
     private boolean onMoving = false;
     private TankFrame tf;
+    private boolean living = true;
+    private Random random = new Random();
+    private Group group;
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWIDTH() {
+        return WIDTH;
+    }
+
+    public int getHEIGHT() {
+        return HEIGHT;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
 
     public void setOnMoving(boolean onMoving) {
         this.onMoving = onMoving;
@@ -23,12 +46,13 @@ public class Tank {
         this.SPEED = SPEED;
     }
 
-    public Tank(int x, int y, int WIDTH, int HEIGHT, Dir dir, TankFrame tf) {
+    public Tank(int x, int y, Dir dir, Group group, TankFrame tf) {
         this.x = x;
         this.y = y;
-        this.WIDTH = WIDTH;
-        this.HEIGHT = HEIGHT;
+        this.WIDTH = RescourceMgr.tankD.getWidth();
+        this.HEIGHT = RescourceMgr.tankD.getHeight();
         this.dir = dir;
+        this.group = group;
         this.tf = tf;
     }
 
@@ -37,12 +61,36 @@ public class Tank {
 //        Color c = g.getColor();
 //        g.setColor(Color.BLUE);
 //        g.fillRect(x, y, WIDTH, HEIGHT);
+//        g.setColor(c);
+        if(!living) {
+            tf.tanks.remove(this);
+        }
+        switch (dir) {
+            case LEFT:
+                g.drawImage(RescourceMgr.tankL, x, y, null);
+                break;
+            case RIGHT:
+                g.drawImage(RescourceMgr.tankR, x, y, null);
+                break;
+            case UP:
+                g.drawImage(RescourceMgr.tankU, x, y, null);
+                break;
+            case DOWN:
+                g.drawImage(RescourceMgr.tankD, x, y, null);
+                break;
+            default:
+                break;
+        }
+        if (this.group == Group.BAD) {
+//            System.out.println(random.nextInt(10));
+            if (random.nextInt(20) > 18) {
+                this.fire();
+            }
+        }
+        if (onMoving) {
 
-        g.drawImage(RescourceMgr.tankL, x, y, null);
-        if(onMoving){
             move();
         }
-        g.setColor(c);
     }
     private void move() {
         switch (dir) {
@@ -62,7 +110,17 @@ public class Tank {
                 break;
         }
     }
-    public Bullet fire() {
-        return new Bullet(x + WIDTH/2 - 4, y + HEIGHT/2 - 4, dir, tf);
+    public void fire() {
+        int bX = this.x + WIDTH/2;
+        int bY = this.y + HEIGHT/2;
+        if (group.equals(Group.GOOD)) {
+            tf.bullets.add(new Bullet(bX, bY, dir, Group.GOOD, tf));
+        }else{
+            tf.bullets.add(new Bullet(bX, bY, dir, Group.BAD, tf));
+        }
+    }
+
+    public void die() {
+        living = false;
     }
 }

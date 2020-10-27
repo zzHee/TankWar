@@ -11,8 +11,12 @@ import java.util.List;
 public class TankFrame extends Frame{
     static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
 
-    Tank myTank = new Tank(200, 200, 50, 50, Dir.DOWN, this);
+    Tank myTank = new Tank(200, 200, Dir.DOWN, Group.GOOD, this);
+    Tank myTank1 = new Tank(200, 200, Dir.DOWN, Group.GOOD, this);
+
     List<Bullet> bullets = new ArrayList<>();
+    List<Tank> tanks = new ArrayList<>();
+    Explode e = new Explode(100, 100, 100, 100);
 
     public TankFrame(){
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -52,12 +56,23 @@ public class TankFrame extends Frame{
         Color c = g.getColor();
         g.setColor(Color.WHITE);
         g.drawString("子弹的数量" + bullets.size(), 10, 60);
+        g.drawString("敌人坦克的数量" + tanks.size(), 10, 80);
         g.setColor(c);
 
         myTank.paint(g);
+        myTank1.paint(g);
+        e.paint(g);
         //用iterator遍历的时候删除回有cModificationException
-        for(int i = 0; i < bullets.size(); i++) {
+        for (int i = 0; i < tanks.size(); i++) {
+            tanks.get(i).paint(g);
+        }
+        for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).paint(g);
+        }
+        for (int i = 0; i < bullets.size(); i++) {
+            for (int j = 0; j < tanks.size(); j++) {
+                bullets.get(i).collideWith(tanks.get(j));
+            }
         }
     }
 
@@ -120,7 +135,7 @@ public class TankFrame extends Frame{
                     bd = false;
                     break;
                 case KeyEvent.VK_CONTROL:
-                    bullets.add(myTank.fire());
+                    myTank.fire();
                 default:
                     break;
             }
